@@ -36,9 +36,17 @@ struct Direction <: Measure
     x :: Float64
     y :: Float64
     z :: Float64
+    hasvalue  :: Bool
     function Direction(sys, x, y, z)
         magnitude = hypot(x, y, z)
         new(sys, x/magnitude, y/magnitude, z/magnitude)
+    end
+    function Direction(sys, x, y, z)
+        new(sys, x, y, z, true)
+    end
+    function Direction()
+        sys = Directions.System(1)
+        new(sys, 0.0, 0.0, 0.0, false)
     end
 end
 

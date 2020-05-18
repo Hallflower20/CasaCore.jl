@@ -44,9 +44,9 @@ measure(frame, Epoch(epoch"UTC", 50237.29*u"d"), epoch"TAI")
 measure
 
 mutable struct ReferenceFrame
-    epoch :: Nullable{Epoch}
-    direction :: Nullable{Direction}
-    position :: Nullable{Position}
+    epoch :: Epoch
+    direction :: Direction
+    position :: Position
 end
 
 """
@@ -69,7 +69,10 @@ set!(frame, Epoch(epoch"UTC", 50237.29*u"d")) # set the current UTC time
 ```
 """
 function ReferenceFrame()
-    ReferenceFrame(nothing, nothing, nothing)
+    epoch = Epoch()
+    direction = Direction()
+    position = Position()
+    ReferenceFrame(epoch, direction, position)
 end
 
 set!(frame::ReferenceFrame, epoch::Epoch) = frame.epoch = epoch

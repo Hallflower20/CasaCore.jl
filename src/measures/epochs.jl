@@ -34,6 +34,14 @@ This type represents an instance in time.
 struct Epoch <: Measure
     sys  :: Epochs.System
     time :: Float64 # measured in seconds
+    hasvalue :: Bool
+    function Epoch(sys, time)
+        new(sys, time, true)
+    end
+    function Epoch()
+        sys = Epochs.System(1)
+        new(sys, 0.0, false)
+    end
 end
 
 units(::Epoch) = u"s"

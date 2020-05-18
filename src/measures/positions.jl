@@ -31,6 +31,14 @@ struct Position <: Measure
     x :: Float64 # measured in meters
     y :: Float64 # measured in meters
     z :: Float64 # measured in meters
+    hasvalue :: Bool
+    function Position(sys :: Positions.System, x :: Float64, y :: Float64, z :: Float64)
+        new(sys, x, y, z, true)
+    end
+    function Position()
+        sys = Positions.System(1)
+        new(sys, 0.0, 0.0, 0.0, false)
+    end
 end
 
 units(::Position) = u"m"

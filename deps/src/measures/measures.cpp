@@ -32,22 +32,25 @@ using namespace casacore;
 // These structs must mirror their corresponding Julia types.
 
 struct Epoch {
-    int sys;
-    double time; // measured in seconds
+  int sys;
+  double time; // measured in seconds
+  bool hasvalue;
 };
 
 struct Direction {
-    int sys;
-    double x; // measured in meters
-    double y; // measured in meters
-    double z; // measured in meters
+  int sys;
+  double x; // measured in meters
+  double y; // measured in meters
+  double z; // measured in meters
+  bool hasvalue;
 };
 
 struct Position {
-    int sys;
-    double x; // measured in meters
-    double y; // measured in meters
-    double z; // measured in meters
+  int sys;
+  double x; // measured in meters
+  double y; // measured in meters
+  double z; // measured in meters
+  bool hasvalue;
 };
 
 struct Baseline {
@@ -61,26 +64,13 @@ struct Baseline {
 // definition of Julia's nullable types ever changes, these definitions will need to be updated.
 //
 // NOTE: In Julia v0.6 the `isnull` field changed to `hasvalue`.
-
-struct NullableEpoch {
-    bool hasvalue;
-    Epoch value;
-};
-
-struct NullableDirection {
-    bool hasvalue;
-    Direction value;
-};
-
-struct NullablePosition {
-    bool hasvalue;
-    Position value;
-};
+// NOTE: In Julia v1.0 the Nullable type changed to Union{T, Nothing},
+// so we just define our own structs.
 
 struct ReferenceFrame {
-    NullableEpoch epoch;
-    NullableDirection direction;
-    NullablePosition position;
+  Epoch epoch;
+  Direction direction;
+  Position position;
 };
 
 // Define conversion routines from the C++ types to the Julia types.
@@ -146,15 +136,15 @@ MBaseline getMBaseline(Baseline const& baseline) {
 MeasFrame getMeasFrame(ReferenceFrame const& frame) {
     MeasFrame mframe = MeasFrame();
     if (frame.epoch.hasvalue) {
-        MEpoch mepoch = getMEpoch(frame.epoch.value);
+        MEpoch mepoch = getMEpoch(frame.epoch);
         mframe.set(mepoch);
     }
     if (frame.direction.hasvalue) {
-        MDirection mdirection = getMDirection(frame.direction.value);
+        MDirection mdirection = getMDirection(frame.direction);
         mframe.set(mdirection);
     }
     if (frame.position.hasvalue) {
-        MPosition mposition = getMPosition(frame.position.value);
+        MPosition mposition = getMPosition(frame.position);
         mframe.set(mposition);
     }
     return mframe;

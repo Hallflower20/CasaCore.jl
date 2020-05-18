@@ -79,6 +79,7 @@ Epoch getEpoch(MEpoch const& mepoch) {
     Epoch epoch;
     epoch.sys  = mepoch.getRef().getType();
     epoch.time = mepoch.get("s").getValue();
+    epoch.hasvalue = true;
     return epoch;
 }
 
@@ -89,6 +90,7 @@ Direction getDirection(MDirection const& mdirection) {
     direction.x = vec(0);
     direction.y = vec(1);
     direction.z = vec(2);
+    direction.hasvalue = true;
     return direction;
 }
 
@@ -99,6 +101,7 @@ Position getPosition(MPosition const& mposition) {
     position.x = vec(0);
     position.y = vec(1);
     position.z = vec(2);
+    position.hasvalue = true;
     return position;
 }
 
@@ -189,6 +192,7 @@ extern "C" {
         position->x = vec(0);
         position->y = vec(1);
         position->z = vec(2);
+	position->hasvalue = true;
         return found;
     }
 }

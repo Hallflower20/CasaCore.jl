@@ -124,24 +124,24 @@
         set!(frame, observatory("OVRO_MMA"))
         set!(frame, Epoch(epoch"UTC", 50237.29u"d"))
         dir1  = Direction(dir"AZEL", "40.0d", "50.0d")
-        #j2000 = measure(frame,dir1,dir"J2000")
-        #dir2  = measure(frame,j2000,dir"AZEL")
-        #@test dir1.sys === dir2.sys === dir"AZEL"
-        #@test j2000.sys === dir"J2000"
-        #@test dir1 ≈ dir2
-        #dir1 = Direction(dir"J2000", "19h59m28.35663s", "+40d44m02.0970s")
-        #azel = measure(frame,dir1,dir"AZEL")
-        #dir2 = measure(frame,azel,dir"J2000")
-        #@test dir1.sys === dir2.sys === dir"J2000"
-        #@test azel.sys === dir"AZEL"
-        #@test dir1 ≈ dir2
+        j2000 = measure(frame,dir1,dir"J2000")
+        dir2  = measure(frame,j2000,dir"AZEL")
+        @test dir1.sys === dir2.sys === dir"AZEL"
+        @test j2000.sys === dir"J2000"
+        @test dir1 ≈ dir2
+        dir1 = Direction(dir"J2000", "19h59m28.35663s", "+40d44m02.0970s")
+        azel = measure(frame,dir1,dir"AZEL")
+        dir2 = measure(frame,azel,dir"J2000")
+        @test dir1.sys === dir2.sys === dir"J2000"
+        @test azel.sys === dir"AZEL"
+        @test dir1 ≈ dir2
 
-        #u = Measures.UnnormalizedDirection(dir1)
-        #@test Direction(measure(frame, u, dir"AZEL")) == azel
+        u = Measures.UnnormalizedDirection(dir1)
+        @test Direction(measure(frame, u, dir"AZEL")) == azel
 
-        #@test Measures.units(Direction) == Measures.units(dir1) == 1
+        @test Measures.units(Direction) == Measures.units(dir1) == 1
     end
-#=    
+    
     @testset "positions" begin
         @test pos"WGS84" === Measures.Positions.WGS84
         @test pos"ITRF"  === Measures.Positions.ITRF
@@ -184,7 +184,7 @@
 
         @test Measures.units(Baseline) == Measures.units(baseline1) == u"m"
     end
-=#
+
     @testset "conversions" begin
         itrf = (dir"ITRF", pos"ITRF", baseline"ITRF")
         not_itrf = (dir"J2000", pos"WGS84", baseline"GALACTIC")

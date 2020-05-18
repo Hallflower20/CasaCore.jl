@@ -39,10 +39,7 @@ struct Direction <: Measure
     hasvalue  :: Bool
     function Direction(sys, x, y, z)
         magnitude = hypot(x, y, z)
-        new(sys, x/magnitude, y/magnitude, z/magnitude)
-    end
-    function Direction(sys, x, y, z)
-        new(sys, x, y, z, true)
+        new(sys, x/magnitude, y/magnitude, z/magnitude, true)
     end
     function Direction()
         sys = Directions.System(1)

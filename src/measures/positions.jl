@@ -32,7 +32,7 @@ struct Position <: Measure
     y :: Float64 # measured in meters
     z :: Float64 # measured in meters
     hasvalue :: Bool
-    function Position(sys :: Positions.System, x :: Float64, y :: Float64, z :: Float64)
+    function Position(sys :: Positions.System, x, y, z)
         new(sys, x, y, z, true)
     end
     function Position()

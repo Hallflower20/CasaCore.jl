@@ -17,9 +17,11 @@ using CasaCore.Tables
 using CasaCore.Measures
 using CasaCore.MeasurementSets
 using Unitful
-using Base.Test
+using Test
+using Random
+using LinearAlgebra
 
-srand(123)
+Random.seed!(123)
 
 @testset "CasaCore Tests" begin
     include("tables.jl")

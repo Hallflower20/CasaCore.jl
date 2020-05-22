@@ -23,7 +23,7 @@ module Epochs
 end
 
 macro epoch_str(sys)
-    eval(current_module(),:(Measures.Epochs.$(Symbol(sys))))
+    Core.eval(@__MODULE__,:(Measures.Epochs.$(Symbol(sys))))
 end
 
 """

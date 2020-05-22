@@ -80,7 +80,7 @@ for T in typelist
         if shape[1] != Nrows
             column_length_mismatch_error(shape[1], Nrows)
         end
-        ccall(($c_add_scalar_column, libcasacorewrapper), Void,
+        ccall(($c_add_scalar_column, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}), table, column)
         column
     end
@@ -93,7 +93,7 @@ for T in typelist
             column_length_mismatch_error(shape[end], Nrows)
         end
         cell_shape = convert(Vector{Cint}, collect(shape[1:end-1]))
-        ccall(($c_add_array_column, libcasacorewrapper), Void,
+        ccall(($c_add_array_column, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{Cint}, Cint),
               table, column, cell_shape, length(cell_shape))
         column
@@ -131,7 +131,7 @@ julia> Tables.delete(table)
 function remove_column!(table::Table, column::String)
     isopen(table) || table_closed_error()
     iswritable(table) || table_readonly_error()
-    ccall(("remove_column", libcasacorewrapper), Void,
+    ccall(("remove_column", libcasacorewrapper), Nothing,
           (Ptr{CasaCoreTable}, Ptr{Cchar}), table, column)
 end
 
@@ -144,7 +144,7 @@ function column_info(table::Table, column::String)
                       (Ptr{CasaCoreTable}, Ptr{Cchar}, Ref{Cint}, Ref{Cint}),
                       table, column, element_type, dimension)
     T = enum2type[TypeEnum(element_type[])]
-    shape = unsafe_wrap(Vector{Cint}, shape_ptr, dimension[], true)
+    shape = unsafe_wrap(Vector{Cint}, shape_ptr, dimension[], own=true)
     T, tuple(shape...)
 end
 
@@ -204,7 +204,7 @@ for T in typelist
 
     @eval function write_column!(table::Table, value::Array{$T}, column::String)
         shape = convert(Vector{Cint}, collect(size(value)))
-        ccall(($c_put_column, libcasacorewrapper), Void,
+        ccall(($c_put_column, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{$Tc}, Ptr{Cint}, Cint),
               table, column, value, shape, length(shape))
         value

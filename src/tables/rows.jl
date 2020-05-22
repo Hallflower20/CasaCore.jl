@@ -80,7 +80,7 @@ julia> Tables.delete(table)
 function add_rows!(table::Table, number::Integer)
     isopen(table) || table_closed_error()
     iswritable(table) || table_readonly_error()
-    ccall((:add_rows, libcasacorewrapper), Void,
+    ccall((:add_rows, libcasacorewrapper), Nothing,
           (Ptr{CasaCoreTable}, Cuint), table, number)
     number
 end
@@ -125,7 +125,7 @@ function remove_rows!(table::Table, rows)
         row_out_of_bounds_error(rows)
     end
     c_rows = collect(rows.-1)
-    ccall((:remove_rows, libcasacorewrapper), Void,
+    ccall((:remove_rows, libcasacorewrapper), Nothing,
           (Ptr{CasaCoreTable}, Ptr{Cuint}, Csize_t),
           table, c_rows, length(c_rows))
     rows

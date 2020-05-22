@@ -132,7 +132,7 @@
         @test_throws CasaCoreTablesError Tables.add_column!(table, "test", Float64, (10, 11))
 
         names = ("bools", "ints", "floats", "doubles", "complex", "strings")
-        types = (Bool, Int32, Float32, Float64, Complex64, String)
+        types = (Bool, Int32, Float32, Float64, ComplexF32, String)
         types_nostring = types[1:end-1]
         for shape in ((10,), (11, 10), (12, 11, 10))
             for (name, T) in zip(names, types)
@@ -179,7 +179,7 @@
         Tables.add_rows!(table, 10)
 
         names = ("bools", "ints", "floats", "doubles", "complex", "strings")
-        types = (Bool, Int32, Float32, Float64, Complex64, String)
+        types = (Bool, Int32, Float32, Float64, ComplexF32, String)
         types_nostring = types[1:end-1]
         for shape in ((10,), (11, 10), (12, 11, 10))
             for T in types_nostring
@@ -224,7 +224,7 @@
         table = Tables.create(path)
 
         names = ("bools", "ints", "floats", "doubles", "complex", "strings")
-        types = (Bool, Int32, Float32, Float64, Complex64, String)
+        types = (Bool, Int32, Float32, Float64, ComplexF32, String)
         types_nostring = types[1:end-1]
 
         # scalars
@@ -265,7 +265,7 @@
         Tables.add_column!(table, "column", Float64, (10,))
 
         names = ("bools", "ints", "floats", "doubles", "complex", "strings")
-        types = (Bool, Int32, Float32, Float64, Complex64, String)
+        types = (Bool, Int32, Float32, Float64, ComplexF32, String)
         types_nostring = types[1:end-1]
 
         # scalars
@@ -317,14 +317,14 @@
         Tables.remove_column!(table,"SKA_DATA")
         @test Tables.column_exists(table,"SKA_DATA") == false
 
-        ant1 = Array{Int32}(10)
-        ant2 = Array{Int32}(10)
-        uvw  = Array{Float64}(3, 10)
-        time = Array{Float64}(10)
-        data      = Array{Complex64}(4, 109, 10)
-        model     = Array{Complex64}(4, 109, 10)
-        corrected = Array{Complex64}(4, 109, 10)
-        freq = Array{Float64}(109, 1)
+        ant1 = Array{Int32}(undef, 10)
+        ant2 = Array{Int32}(undef, 10)
+        uvw  = Array{Float64}(undef, 3, 10)
+        time = Array{Float64}(undef, 10)
+        data      = Array{ComplexF32}(undef, 4, 109, 10)
+        model     = Array{ComplexF32}(undef, 4, 109, 10)
+        corrected = Array{ComplexF32}(undef, 4, 109, 10)
+        freq = Array{Float64}(undef, 109, 1)
 
         rand!(ant1)
         rand!(ant2)

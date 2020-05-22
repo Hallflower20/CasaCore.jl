@@ -23,7 +23,7 @@ module Directions
 end
 
 macro dir_str(sys)
-    eval(current_module(),:(Measures.Directions.$(Symbol(sys))))
+    Core.eval(@__MODULE__,:(Measures.Directions.$(Symbol(sys))))
 end
 
 """
@@ -45,6 +45,9 @@ struct Direction <: Measure
         sys = Directions.System(1)
         new(sys, 0.0, 0.0, 0.0, false)
     end
+    function Direction(dir::Direction)
+        new(dir.sys, dir.x, dir.y, dir.z, dir.hasvalue)
+    end
 end
 
 struct UnnormalizedDirection <: Measure
@@ -54,12 +57,12 @@ struct UnnormalizedDirection <: Measure
     z :: Float64
 end
 
-function Base.convert(::Type{Direction}, direction::UnnormalizedDirection)
-    Direction(direction.sys, direction.x, direction.y, direction.z)
+function UnnormalizedDirection(direction::Direction)
+    UnnormalizedDirection(direction.sys, direction.x, direction.y, direction.z)
 end
 
-function Base.convert(::Type{UnnormalizedDirection}, direction::Direction)
-    UnnormalizedDirection(direction.sys, direction.x, direction.y, direction.z)
+function Direction(direction::UnnormalizedDirection)
+    Direction(direction.sys, direction.x, direction.y, direction.z)
 end
 
 

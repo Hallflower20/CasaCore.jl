@@ -1,4 +1,2 @@
-julia 0.6
 StaticArrays
-Unitful 0.0.3
-
+Unitful

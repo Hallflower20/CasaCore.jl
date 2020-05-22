@@ -25,7 +25,11 @@ struct Keyword
     name::String
 end
 
-Base.convert(::Type{String}, keyword::Keyword) = keyword.name
+function String(keyword::Keyword)
+    keyword.name
+end 
+
+#Base.convert(::Type{String}, keyword::Keyword) = keyword.name
 function Base.unsafe_convert(::Type{Ptr{Cchar}}, keyword::Keyword)
     Base.unsafe_convert(Ptr{Cchar}, String(keyword))
 end
@@ -115,7 +119,7 @@ julia> Tables.delete(table)
 function remove_keyword!(table::Table, keyword::Keyword)
     isopen(table) || table_closed_error()
     iswritable(table) || table_readonly_error()
-    ccall((:remove_keyword, libcasacorewrapper), Void,
+    ccall((:remove_keyword, libcasacorewrapper), Nothing,
           (Ptr{CasaCoreTable}, Ptr{Cchar}), table, keyword)
     keyword
 end
@@ -123,7 +127,7 @@ end
 function remove_keyword!(table::Table, column::String, keyword::Keyword)
     isopen(table) || table_closed_error()
     iswritable(table) || table_readonly_error()
-    ccall((:remove_column_keyword, libcasacorewrapper), Void,
+    ccall((:remove_column_keyword, libcasacorewrapper), Nothing,
           (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{Cchar}), table, column, keyword)
 end
 
@@ -136,7 +140,7 @@ function keyword_info(table::Table, keyword::Keyword)
                       (Ptr{CasaCoreTable}, Ptr{Cchar}, Ref{Cint}, Ref{Cint}),
                       table, keyword, element_type, dimension)
     T = enum2type[TypeEnum(element_type[])]
-    shape = unsafe_wrap(Vector{Cint}, shape_ptr, dimension[], true)
+    shape = unsafe_wrap(Vector{Cint}, shape_ptr, dimension[], own=true)
     T, tuple(shape...)
 end
 
@@ -148,7 +152,7 @@ function keyword_info(table::Table, column::String, keyword::Keyword)
                       (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{Cchar}, Ref{Cint}, Ref{Cint}),
                       table, column, keyword, element_type, dimension)
     T = enum2type[TypeEnum(element_type[])]
-    shape = unsafe_wrap(Vector{Cint}, shape_ptr, dimension[], true)
+    shape = unsafe_wrap(Vector{Cint}, shape_ptr, dimension[], own=true)
     T, tuple(shape...)
 end
 
@@ -240,14 +244,14 @@ for T in typelist
     end
 
     @eval function write_keyword!(table::Table, value::$T, keyword::Keyword)
-        ccall(($c_put_keyword, libcasacorewrapper), Void,
+        ccall(($c_put_keyword, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, $Tc), table, keyword, value)
         value
     end
 
     @eval function write_keyword!(table::Table, value::Array{$T}, keyword::Keyword)
         shape = convert(Vector{Cint}, collect(size(value)))
-        ccall(($c_put_keyword_array, libcasacorewrapper), Void,
+        ccall(($c_put_keyword_array, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{$Tc}, Ptr{Cint}, Cint),
               table, keyword, value, shape, length(shape))
         value
@@ -255,7 +259,7 @@ for T in typelist
 
     @eval function write_keyword!(table::Table, value::$T,
                                   column::String, keyword::Keyword)
-        ccall(($c_put_column_keyword, libcasacorewrapper), Void,
+        ccall(($c_put_column_keyword, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{Cchar}, $Tc),
               table, column, keyword, value)
         value
@@ -264,7 +268,7 @@ for T in typelist
     @eval function write_keyword!(table::Table, value::Array{$T},
                                   column::String, keyword::Keyword)
         shape = convert(Vector{Cint}, collect(size(value)))
-        ccall(($c_put_column_keyword_array, libcasacorewrapper), Void,
+        ccall(($c_put_column_keyword_array, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{Cchar}, Ptr{$Tc}, Ptr{Cint}, Cint),
               table, column, keyword, value, shape, length(shape))
         value
@@ -280,7 +284,7 @@ function read_keyword(table::Table, keyword::Keyword, ::Type{Table}, shape)
 end
 
 function write_keyword!(table::Table, value::Table, keyword::Keyword)
-    ccall((:put_keyword_table, libcasacorewrapper), Void,
+    ccall((:put_keyword_table, libcasacorewrapper), Nothing,
           (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{CasaCoreTable}),
           table, keyword, value)
     value

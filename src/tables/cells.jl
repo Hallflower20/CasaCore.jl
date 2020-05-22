@@ -80,7 +80,7 @@ for T in typelist
 
     @eval function write_cell!(table::Table, value::$T, column::String, row::Int)
         # Subtract 1 from the row number to convert to a 0-based indexing scheme
-        ccall(($c_put_cell_scalar, libcasacorewrapper), Void,
+        ccall(($c_put_cell_scalar, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Cuint, $Tc), table, column, row-1, value)
         value
     end
@@ -88,7 +88,7 @@ for T in typelist
     @eval function write_cell!(table::Table, value::Array{$T}, column::String, row::Int)
         # Subtract 1 from the row number to convert to a 0-based indexing scheme
         shape = convert(Vector{Cint}, collect(size(value)))
-        ccall(($c_put_cell_array, libcasacorewrapper), Void,
+        ccall(($c_put_cell_array, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Cuint, Ptr{$Tc}, Ptr{Cint}, Cint),
               table, column, row-1, value, shape, length(shape))
         value

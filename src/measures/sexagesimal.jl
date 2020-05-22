@@ -41,10 +41,10 @@ function sexagesimal(str::AbstractString)
     m === nothing && err("Unknown sexagesimal format.")
 
     sign = m.captures[1] == "-" ? -1 : +1
-    degrees_or_hours = float(m.captures[2])
+    degrees_or_hours = parse(Float64, m.captures[2])
     isdegrees = m.captures[3] == "d"
-    minutes = m.captures[4] === nothing ? 0.0 : float(m.captures[4])
-    seconds = m.captures[5] === nothing ? 0.0 : float(m.captures[5])
+    minutes = m.captures[4] === nothing ? 0.0 : parse(Float64, m.captures[4])
+    seconds = m.captures[5] === nothing ? 0.0 : parse(Float64, m.captures[5])
 
     minutes += seconds/60
     degrees_or_hours += minutes/60
@@ -75,13 +75,13 @@ function sexagesimal(angle::T; hours::Bool = false, digits::Int = 0) where T
     end
     if hours
         value = radians * 12/π
-        value = round(value*3600, digits) / 3600
+        value = round(value*3600, digits=digits) / 3600
         q1 = floor(Int, value)
         s1 = @sprintf("%dh", q1)
         s < 0 && (s1 = "-"*s1)
     else
         value = radians * 180/π
-        value = round(value*3600, digits) / 3600
+        value = round(value*3600, digits=digits) / 3600
         q1 = floor(Int, value)
         s1 = @sprintf("%dd", q1)
         s > 0 && (s1 = "+"*s1)
@@ -91,7 +91,7 @@ function sexagesimal(angle::T; hours::Bool = false, digits::Int = 0) where T
     q2 = floor(Int, value)
     s2 = @sprintf("%02dm", q2)
     value = (value - q2) * 60
-    q3 = round(value, digits)
+    q3 = round(value, digits=digits)
     s3 = @sprintf("%016.13f", q3)
     # remove the extra decimal places, but be sure to remove the
     # decimal point if we are removing all of the decimal places

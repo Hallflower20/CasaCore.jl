@@ -29,15 +29,15 @@ function promote_vector_measure(::Type{T}, ::Type{S}) where {T<:VectorMeasure, S
     end
 end
 
-Base.norm(::Direction) = 1
-function Base.norm(measure::T) where T<:VectorMeasure
+LinearAlgebra.norm(::Direction) = 1
+function LinearAlgebra.norm(measure::T) where T<:VectorMeasure
     hypot(measure.x, measure.y, measure.z) * units(T)
 end
 function longitude(measure::VectorMeasure)
-    atan2(measure.y, measure.x) * u"rad"
+    atan(measure.y, measure.x) * u"rad"
 end
 function latitude(measure::VectorMeasure)
-    atan2(measure.z, hypot(measure.x, measure.y)) * u"rad"
+    atan(measure.z, hypot(measure.x, measure.y)) * u"rad"
 end
 
 function Base.isapprox(lhs::Epoch, rhs::Epoch)
@@ -81,19 +81,19 @@ for op in (:*, :/)
     end
 end
 
-function Base.dot(lhs::VectorMeasure, rhs::VectorMeasure)
+function LinearAlgebra.dot(lhs::VectorMeasure, rhs::VectorMeasure)
     check_coordinate_system(lhs, rhs)
     (lhs.x*rhs.x + lhs.y*rhs.y + lhs.z*rhs.z) * units(lhs) * units(rhs)
 end
 
-function Base.cross(lhs::T, rhs::AnyDirection) where T<:VectorMeasure
+function LinearAlgebra.cross(lhs::T, rhs::AnyDirection) where T<:VectorMeasure
     check_coordinate_system(lhs, rhs)
     Tp = promote_vector_measure(T)
     Tp(lhs.sys, lhs.y*rhs.z - lhs.z*rhs.y,
                 lhs.z*rhs.x - lhs.x*rhs.z,
                 lhs.x*rhs.y - lhs.y*rhs.x)
 end
-function Base.cross(lhs::VectorMeasure, rhs::VectorMeasure)
+function LinearAlgebra.cross(lhs::VectorMeasure, rhs::VectorMeasure)
     -cross(rhs, lhs)
 end
 

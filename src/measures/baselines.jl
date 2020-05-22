@@ -23,7 +23,7 @@ module Baselines
 end
 
 macro baseline_str(sys)
-    eval(current_module(),:(Measures.Baselines.$(Symbol(sys))))
+    Core.eval(@__MODULE__,:(Measures.Baselines.$(Symbol(sys))))
 end
 
 """

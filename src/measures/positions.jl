@@ -18,7 +18,7 @@ module Positions
 end
 
 macro pos_str(sys)
-    eval(current_module(),:(Measures.Positions.$(Symbol(sys))))
+    Core.eval(@__MODULE__,:(Measures.Positions.$(Symbol(sys))))
 end
 
 """

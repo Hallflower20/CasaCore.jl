@@ -42,11 +42,11 @@ Table: /tmp/my-table.ms (read/write)
 julia> Tables.add_rows!(table, 3)
 3
 
-julia> table["DATA"] = Complex64[1+2im, 3+4im, 5+6im]
+julia> table["DATA"] = ComplexF32[1+2im, 3+4im, 5+6im]
 3-element Array{Complex{Float32},1}:
- 1.0+2.0im
- 3.0+4.0im
- 5.0+6.0im
+ 1.0f0 + 2.0f0im
+ 3.0f0 + 4.0f0im
+ 5.0f0 + 6.0f0im
 
 julia> Tables.close(table)
 closed::CasaCore.Tables.TableStatus = 0
@@ -56,9 +56,9 @@ Table: /tmp/my-table.ms (read-only)
 
 julia> table["DATA"]
 3-element Array{Complex{Float32},1}:
- 1.0+2.0im
- 3.0+4.0im
- 5.0+6.0im
+ 1.0f0 + 2.0f0im
+ 3.0f0 + 4.0f0im
+ 5.0f0 + 6.0f0im
 
 julia> Tables.delete(table)
 ```
@@ -72,7 +72,7 @@ mutable struct Table
     ptr    :: Ptr{CasaCoreTable}
     function Table(path, status, ptr)
         table = new(path, status, ptr)
-        finalizer(table, close)
+        finalizer(close, table)
         table
     end
 end
@@ -194,7 +194,7 @@ julia> Tables.delete(table)
 """
 function close(table::Table)
     if isopen(table)
-        ccall((:delete_table, libcasacorewrapper), Void,
+        ccall((:delete_table, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable},), table)
         table.status = closed
     end

@@ -202,7 +202,8 @@ for T in typelist
         wrap(ptr, shape)
     end
 
-    @eval function write_column!(table::Table, value::Array{$T}, column::String)
+    @eval function write_column!(table::Table, value_in::AbstractArray{$T}, column::String)
+        value = convert(Array, value_in)
         shape = convert(Vector{Cint}, collect(size(value)))
         ccall(($c_put_column, libcasacorewrapper), Nothing,
               (Ptr{CasaCoreTable}, Ptr{Cchar}, Ptr{$Tc}, Ptr{Cint}, Cint),

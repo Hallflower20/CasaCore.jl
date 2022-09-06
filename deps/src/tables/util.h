@@ -25,6 +25,7 @@ using namespace std;
 using namespace casacore;
 
 typedef complex<float> cmplx;
+typedef unsigned long long uInt64;
 
 // Define a host of helpful methods that convert between casacore::Array and standard C arrays.
 // Strings need to be special cased here.
